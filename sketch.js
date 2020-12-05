@@ -1,6 +1,7 @@
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
+const Constraint = Matter.Constraint;
 
 var myEngine, myWorld;
 var bg;
@@ -11,7 +12,7 @@ function preload(){
 
 function setup(){
 
-createCanvas(1200,600)
+createCanvas(1200,600);
 
 myEngine = Engine.create();
 myWorld = myEngine.world;
@@ -34,7 +35,10 @@ log3 = new Log(800,380,150,PI/7);
 log4 = new Log(1000,380,150,-PI/7);
 
 bird = new Bird(200,400);
- 
+conlog = new Log(230,180,80,PI/2);
+chain = new Chain(bird.body,conlog.body); 
+
+
 }
 
 function draw() {
@@ -57,7 +61,12 @@ log1.display();
 log2.display();
 log3.display();
 log4.display();
+conlog.display();
 
 bird.display();
+
+chain.display();
+
+
 
 }
