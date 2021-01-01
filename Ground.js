@@ -9,6 +9,7 @@ class Ground{
        this.width = width ;
        this.height = height ;
        World.add(myWorld,this.body);
+       
 
     }
 
