@@ -1,17 +1,20 @@
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
+const Constraint = Matter.Constraint;
 
 var myEngine, myWorld;
-var bg;
+var bg,back,score = 0;
+var gameState = "onsling"
 
 function preload(){
-    bg = loadImage("sprites/bg.png");
+
+    getTime();
 }
 
 function setup(){
 
-createCanvas(1200,600)
+createCanvas(1200,600);
 
 myEngine = Engine.create();
 myWorld = myEngine.world;
@@ -33,13 +36,23 @@ log2 = new Log(900,450,300,PI/2);
 log3 = new Log(800,380,150,PI/7);
 log4 = new Log(1000,380,150,-PI/7);
 
-bird = new Bird(200,400);
+bird = new Bird(200,430);
  
+sling = new Slingshot(bird.body,{x:250, y:130}); 
+
+
 }
 
 function draw() {
+    if(bg){
+        background(bg);
+        stroke("white");
+        fill("red");
+        textSize(25);
+        text("Score : "+score,1000,50);
+    }
 
-background(bg);
+
 Engine.update(myEngine);
 
 ground1.display();
@@ -57,7 +70,55 @@ log1.display();
 log2.display();
 log3.display();
 log4.display();
-
+ 
 bird.display();
 
+sling.display();
+ 
+pig1.scoreinc();
+pig2.scoreinc();
+
+}
+
+function mouseDragged(){
+
+if(gameState !== "launch"){}
+
+    Matter.Body.setPosition(bird.body,{x : mouseX , y : mouseY});
+
+}
+
+function mouseReleased(){
+
+    sling.fly();
+    gameState = "launch";
+
+}
+
+function keyPressed(){
+
+    if(keyCode===32 && (bird.body.speed<1 || bird.position.x > 550 )){
+        bird.trajectory =[];
+        Matter.Body.setPosition(bird.body,{x : 250 , y : 130 });
+        sling.attach(bird.body);
+    }
+}
+
+async function getTime(){
+
+    var response = await fetch("http://worldclockapi.com/api/json/est/now");
+    var res = await response.json();
+    var dt = res.currentDateTime;
+    var hr = dt.slice(11,13);
+    console.log(hr);
+
+    if(hr>=18 && hr<=06){
+        back = "sprites/bg.png";
+    }
+
+    else{
+        back = "sprites/bg2.jpg";
+    }
+
+    bg = loadImage(back);
 }
